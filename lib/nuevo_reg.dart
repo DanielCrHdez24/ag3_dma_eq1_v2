@@ -1,43 +1,38 @@
-import 'dart:convert'; // Importa la librería para manejar JSON.
-import 'package:flutter/material.dart'; // Importa Flutter para usar componentes visuales.
-import 'package:flutter/widgets.dart'; // Importa Flutter para widgets básicos.
-import 'package:http/http.dart' as http; // Importa la librería http para hacer solicitudes web.
-import 'package:image_picker/image_picker.dart'; // Importa la librería para seleccionar imágenes desde la galería.
-import 'dart:io'; // Importa la librería para trabajar con archivos.
-import 'package:path/path.dart'; // Importa la librería para trabajar con rutas de archivos.
-import 'package:http_parser/http_parser.dart'; // Importa la librería para establecer tipos de contenido en solicitudes HTTP.
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:http_parser/http_parser.dart';
 
 class NuevoPage extends StatefulWidget {
   @override
-  _NuevoPageState createState() => _NuevoPageState(); // Crea el estado de la página
+  _NuevoPageState createState() => _NuevoPageState();
 }
 
 class _NuevoPageState extends State<NuevoPage> {
-  final _formKey = GlobalKey<FormState>(); // Clave para validar el formulario
-  final TextEditingController _tituloController = TextEditingController(); // Controlador para el campo de título
-  final TextEditingController _generoController = TextEditingController(); // Controlador para el campo de género
-  final TextEditingController _autorController = TextEditingController(); // Controlador para el campo de autor
-  File? _image; // Variable para almacenar la imagen seleccionada
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _tituloController = TextEditingController();
+  final TextEditingController _generoController = TextEditingController();
+  final TextEditingController _autorController = TextEditingController();
+  File? _image;
+  final ImagePicker _picker = ImagePicker();
 
-  final ImagePicker _picker = ImagePicker(); // Instancia de ImagePicker para seleccionar imágenes
-
-  // Función para seleccionar la imagen desde la galería
   Future<void> _selectImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery); // Abre la galería para seleccionar una imagen
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path); // Guarda la imagen seleccionada
+        _image = File(pickedFile.path);
       });
     }
   }
 
-  // Función para limpiar el formulario y la imagen después de un envío exitoso
   void _clearForm() {
-    _tituloController.clear(); // Limpia el campo de título
-    _generoController.clear(); // Limpia el campo de género
-    _autorController.clear(); // Limpia el campo de autor
+    _tituloController.clear();
+    _generoController.clear();
+    _autorController.clear();
     setState(() {
-      _image = null; // Borra la imagen seleccionada
+      _image = null;
     });
   }
 
@@ -45,133 +40,97 @@ class _NuevoPageState extends State<NuevoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Registro de libro"), // Título de la barra de navegación
-        centerTitle: true, // Centra el título
+        title: Text("Registro de libro"),
+        centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0), // Agrega un padding de 16 píxeles
+        padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey, // Asocia el formulario con la clave para validarlo
+          key: _formKey,
           child: Column(
             children: <Widget>[
-              // Campo para el título del libro
               TextFormField(
-                controller: _tituloController, // Asocia el controlador con el campo
-                decoration: InputDecoration(labelText: 'Título'), // Agrega una etiqueta
+                controller: _tituloController,
+                decoration: InputDecoration(labelText: 'Título'),
                 validator: (value) {
-                  if (value == null || value.isEmpty) { // Valida que el campo no esté vacío
-                    return 'Por favor ingrese el título'; // Mensaje de error si está vacío
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingrese el título';
                   }
-                  return null; // Si está bien, no hay mensaje de error
+                  return null;
                 },
               ),
-              // Campo para el género del libro
               TextFormField(
-                controller: _generoController, // Asocia el controlador con el campo
-                decoration: InputDecoration(labelText: 'Género'), // Agrega una etiqueta
+                controller: _generoController,
+                decoration: InputDecoration(labelText: 'Género'),
                 validator: (value) {
-                  if (value == null || value.isEmpty) { // Valida que el campo no esté vacío
-                    return 'Por favor ingrese el género'; // Mensaje de error si está vacío
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingrese el género';
                   }
-                  return null; // Si está bien, no hay mensaje de error
+                  return null;
                 },
               ),
-              // Campo para el autor del libro
               TextFormField(
-                controller: _autorController, // Asocia el controlador con el campo
-                decoration: InputDecoration(labelText: 'Autor'), // Agrega una etiqueta
+                controller: _autorController,
+                decoration: InputDecoration(labelText: 'Autor'),
                 validator: (value) {
-                  if (value == null || value.isEmpty) { // Valida que el campo no esté vacío
-                    return 'Por favor ingrese el autor'; // Mensaje de error si está vacío
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingrese el autor';
                   }
-                  return null; // Si está bien, no hay mensaje de error
+                  return null;
                 },
               ),
-              SizedBox(height: 10), // Espacio entre los campos
-              // Botón para seleccionar la imagen
+              SizedBox(height: 10),
               ElevatedButton(
-                onPressed: _selectImage, // Llama a la función _selectImage cuando se presiona
-                child: Text('Seleccionar Imagen'), // Texto del botón
+                onPressed: _selectImage,
+                child: Text('Seleccionar Imagen'),
               ),
-              SizedBox(height: 10), // Espacio entre el botón y la imagen
-
-              // Muestra la imagen seleccionada si existe, de lo contrario muestra un texto
-              _image != null
-                  ? Image.file(_image!) // Muestra la imagen seleccionada
-                  : Text('No se ha seleccionado ninguna imagen'), // Mensaje si no se seleccionó una imagen
-              SizedBox(height: 20), // Espacio adicional
-
-              // Botón para enviar el formulario y registrar el libro
+              SizedBox(height: 10),
+              _image != null ? Image.file(_image!) : Text('No se ha seleccionado ninguna imagen'),
+              SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                  if (_formKey.currentState!.validate()) { // Valida que el formulario esté correcto
-                    // Obtiene los datos del formulario
+                  if (_formKey.currentState!.validate()) {
                     final titulo = _tituloController.text;
                     final genero = _generoController.text;
                     final autor = _autorController.text;
 
-                    // Verifica si se ha seleccionado una imagen
                     if (_image == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Por favor, selecciona una imagen')), // Muestra mensaje si no se seleccionó imagen
+                        SnackBar(content: Text('Por favor, selecciona una imagen')),
                       );
                       return;
                     }
 
-                    // Crea una solicitud multipart para enviar los datos y la imagen
                     var request = http.MultipartRequest(
-                        'POST', Uri.parse('http://192.168.0.78/catalogo/guardar_libro.php')
-                    );
-                    request.fields['titulo'] = titulo; // Añade el título a la solicitud
-                    request.fields['genero'] = genero; // Añade el género a la solicitud
-                    request.fields['autor'] = autor; // Añade el autor a la solicitud
-
-                    // Añade la imagen a la solicitud multipart
+                        'POST', Uri.parse('http://192.168.0.78/catalogo/guardar_libro.php'));
+                    request.fields['titulo'] = titulo;
+                    request.fields['genero'] = genero;
+                    request.fields['autor'] = autor;
                     var imageFile = await http.MultipartFile.fromPath(
                         'imagen', _image!.path,
-                        contentType: MediaType('image', 'jpg') // Ajusta el tipo de contenido según el formato
-                    );
-                    request.files.add(imageFile); // Añade el archivo de imagen a la solicitud
+                        contentType: MediaType('image', 'jpg'));
+                    request.files.add(imageFile);
 
-                    // Envia la solicitud al servidor
                     try {
                       var response = await request.send();
+                      final respStr = await response.stream.bytesToString();
+                      print("Respuesta del servidor: $respStr");
 
-                      // Maneja la respuesta del servidor
-                      if (response.statusCode == 200) {
-                        final respStr = await response.stream.bytesToString(); // Convierte la respuesta en texto
-                        print("Respuesta del servidor: $respStr"); // Imprime la respuesta del servidor en consola
-
-                        try {
-                          final jsonResponse = jsonDecode(respStr); // Decodifica la respuesta JSON
-                          if (jsonResponse['success']) { // Si la respuesta es exitosa
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(jsonResponse['message'])), // Muestra el mensaje de éxito
-                            );
-                            _clearForm();  // Limpia el formulario e imagen
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error: ${jsonResponse['message']}')), // Muestra el error
-                            );
-                          }
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Error al analizar la respuesta JSON: $e')), // Maneja errores al analizar JSON
-                          );
-                        }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error en el servidor. Código: ${response.statusCode}')), // Error de servidor
-                        );
+                      final jsonResponse = jsonDecode(respStr);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(jsonResponse['message'])),
+                      );
+                      if (jsonResponse['success']) {
+                        _clearForm();
                       }
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error al conectar con el servidor: $e')), // Error de conexión
+                        SnackBar(content: Text('Error al conectar con el servidor: $e')),
                       );
                     }
                   }
                 },
-                child: Text('Registrar Libro'), // Texto del botón para registrar el libro
+                child: Text('Registrar Libro'),
               ),
             ],
           ),

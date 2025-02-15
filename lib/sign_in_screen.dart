@@ -1,23 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'login.dart'; // Importa la clase Login
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SignInScreen(),
-    );
-  }
-}
+import 'package:google_sign_in/google_sign_in.dart';
+import 'login.dart';
+import 'home_page.dart'; // Importa HomePage
 
 class SignInScreen extends StatelessWidget {
   final Login _login = Login();
@@ -27,7 +12,7 @@ class SignInScreen extends StatelessWidget {
     if (user != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage(user: user)),
+        MaterialPageRoute(builder: (context) => HomePage()), // ✅ Ahora está definido
       );
     }
   }
@@ -37,38 +22,14 @@ class SignInScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Iniciar Sesión')),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () => _handleSignIn(context),
-          child: Text('Iniciar sesión con Google'),
-        ),
-      ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  final User user;
-  HomePage({required this.user});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Bienvenido, ${user.displayName}')),
-      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Correo: ${user.email}'),
+            Image.asset('assets/google_logo.png', width: 100, height: 100),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () async {
-                await Login().signOut();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignInScreen()),
-                );
-              },
-              child: Text('Cerrar sesión'),
+              onPressed: () => _handleSignIn(context),
+              child: Text('Iniciar sesión con Google'),
             ),
           ],
         ),
