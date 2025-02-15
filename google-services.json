@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "326285603735",
+    "project_id": "ag3librosfirebase",
+    "storage_bucket": "ag3librosfirebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326285603735:android:affe7896ed7a8f4d454ad2",
+        "android_client_info": {
+          "package_name": "com.example.ag1_dma"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfmlPyUm4r5cjjtnRt9a_lFNfyijXCYBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
